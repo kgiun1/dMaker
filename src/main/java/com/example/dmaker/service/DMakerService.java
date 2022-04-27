@@ -2,8 +2,8 @@ package com.example.dmaker.service;
 
 import com.example.dmaker.entity.Developer;
 import com.example.dmaker.repository.DeveloperRepository;
-import com.example.dmaker.type.DeveloerLevel;
-import com.example.dmaker.type.DeveloerSkillLevel;
+import com.example.dmaker.type.DeveloperLevel;
+import com.example.dmaker.type.DeveloperSkillLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +17,8 @@ public class DMakerService {
     @Transactional
     public void createDeveloper(){
         Developer developer = Developer.builder()
-                .develoerLevel(DeveloerLevel.JUNIOR)
-                .develoerSkillLevel(DeveloerSkillLevel.FRONT_END)
+                .develoerLevel(DeveloperLevel.JUNIOR)
+                .develoerSkillLevel(DeveloperSkillLevel.FRONT_END)
                 .experienceYears(2)
                 .name("Olaf")
                 .age(5)

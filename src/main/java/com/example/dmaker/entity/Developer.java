@@ -1,7 +1,7 @@
 package com.example.dmaker.entity;
 
-import com.example.dmaker.type.DeveloerLevel;
-import com.example.dmaker.type.DeveloerSkillLevel;
+import com.example.dmaker.type.DeveloperLevel;
+import com.example.dmaker.type.DeveloperSkillLevel;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,10 +24,10 @@ public class Developer {
     protected Long id;
 
     @Enumerated(EnumType.STRING)
-    private DeveloerLevel develoerLevel;
+    private DeveloperLevel develoerLevel;
 
     @Enumerated(EnumType.STRING)
-    private DeveloerSkillLevel develoerSkillLevel;
+    private DeveloperSkillLevel develoerSkillLevel;
 
     private Integer experienceYears;
     private String memberId;
