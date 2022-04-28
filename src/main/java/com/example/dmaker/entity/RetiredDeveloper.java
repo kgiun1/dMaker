@@ -1,8 +1,5 @@
 package com.example.dmaker.entity;
 
-import com.example.dmaker.type.DeveloperLevel;
-import com.example.dmaker.type.DeveloperSkillLevel;
-import com.example.dmaker.type.StatusCode;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -18,25 +15,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Developer {
+public class RetiredDeveloper {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    @Enumerated(EnumType.STRING)
-    private DeveloperLevel develoerLevel;
-
-    @Enumerated(EnumType.STRING)
-    private DeveloperSkillLevel develoerSkillLevel;
-
-    private Integer experienceYears;
     private String memberId;
     private String name;
-    private Integer age;
-
-    @Enumerated(EnumType.STRING)
-    private StatusCode statusCode;
 
     @CreatedDate
     private LocalDateTime createdAt;
