@@ -18,8 +18,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.dmaker.exception.DMakerErrorCode.LEVEL_EXPERIENCE_YEARS_NOT_MATCHED;
-import static com.example.dmaker.exception.DMakerErrorCode.NO_DEVELOPER;
+import static com.example.dmaker.exception.DMakerErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +49,7 @@ public class DMakerService {
 
         developerRepository.findByMemberId(request.getMemberId())
                 .ifPresent((developer -> {
-                    throw new DMakerException(LEVEL_EXPERIENCE_YEARS_NOT_MATCHED);
+                    throw new DMakerException(DUPLICATED_MEMBER_ID);
                 }));
     }
 
