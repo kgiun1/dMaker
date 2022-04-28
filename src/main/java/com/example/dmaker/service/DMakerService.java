@@ -42,7 +42,7 @@ public class DMakerService {
                 .build();
 
         developerRepository.save(developer);
-        return new CreateDeveloper.Response().fromEntity(developer);
+        return CreateDeveloper.Response.fromEntity(developer);
     }
 
     private void validateCreateDeveloperRequest(CreateDeveloper.Request request) {
