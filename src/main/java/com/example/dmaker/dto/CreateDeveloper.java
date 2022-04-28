@@ -17,6 +17,7 @@ public class CreateDeveloper {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    @ToString
     public static class Request {
         @NotNull
         private DeveloperLevel developerLevel;
