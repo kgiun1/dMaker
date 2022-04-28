@@ -1,15 +1,17 @@
 package com.example.dmaker.service;
 
 import com.example.dmaker.dto.CreateDeveloper;
+import com.example.dmaker.dto.DeveloperDto;
 import com.example.dmaker.entity.Developer;
 import com.example.dmaker.exception.DMakerException;
 import com.example.dmaker.repository.DeveloperRepository;
 import com.example.dmaker.type.DeveloperLevel;
-import com.example.dmaker.type.DeveloperSkillLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.dmaker.exception.DMakerErrorCode.LEVEL_EXPERIENCE_YEARS_NOT_MATCHED;
 
@@ -54,5 +56,11 @@ public class DMakerService {
                 .ifPresent((developer -> {
                     throw new DMakerException(LEVEL_EXPERIENCE_YEARS_NOT_MATCHED);
                 }));
+    }
+
+    public List<DeveloperDto> getAllDevelopers() {
+        return developerRepository.findAll()
+                .stream().map(DeveloperDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }

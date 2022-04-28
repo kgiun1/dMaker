@@ -1,0 +1,2 @@
+GET http://localhost:8088/developers
+Accept: application/json
