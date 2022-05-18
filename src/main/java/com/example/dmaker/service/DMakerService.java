@@ -11,6 +11,7 @@ import com.example.dmaker.repository.DeveloperRepository;
 import com.example.dmaker.repository.RetiredDeveloperRepository;
 import com.example.dmaker.type.DeveloperLevel;
 import com.example.dmaker.type.StatusCode;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,14 @@ public class DMakerService {
     public CreateDeveloper.Response createDeveloper(CreateDeveloper.Request request) {
         validateCreateDeveloperRequest(request);
 
-        Developer developer = Developer.builder()
+        return CreateDeveloper.Response.fromEntity(
+                developerRepository.save(createDeveloperFromRequest(request)
+                )
+        );
+    }
+
+    private Developer createDeveloperFromRequest(CreateDeveloper.Request request) {
+        return Developer.builder()
                 .develoerLevel(request.getDeveloperLevel())
                 .develoerSkillLevel(request.getDeveloperSkillLevel())
                 .experienceYears(request.getExperienceYears())
@@ -39,12 +47,9 @@ public class DMakerService {
                 .name(request.getName())
                 .age(request.getAge())
                 .build();
-
-        developerRepository.save(developer);
-        return CreateDeveloper.Response.fromEntity(developer);
     }
 
-    private void validateCreateDeveloperRequest(CreateDeveloper.Request request) {
+    private void validateCreateDeveloperRequest(@NonNull CreateDeveloper.Request request) {
         validateDeveloperLevel(request.getDeveloperLevel(), request.getExperienceYears());
 
         developerRepository.findByMemberId(request.getMemberId())
@@ -53,42 +58,46 @@ public class DMakerService {
                 }));
     }
 
+    @Transactional
     public List<DeveloperDto> getAllEmplyedDevelopers() {
         return developerRepository.findDeveloperByStatusCodeEquals(StatusCode.EMPLOYED)
                 .stream().map(DeveloperDto::fromEntity)
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public DeveloperDetailDto getDeveloperDetail(String memberId) {
-        return developerRepository.findByMemberId(memberId)
-                .map(DeveloperDetailDto::fromEntity)
-                .orElseThrow(() -> new DMakerException(NO_DEVELOPER));
+        return DeveloperDetailDto.fromEntity(getDeveloperByMemberId(memberId));
+    }
 
+    private Developer getDeveloperByMemberId(String memberId) {
+        return developerRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new DMakerException(NO_DEVELOPER));
     }
 
     @Transactional
     public DeveloperDetailDto editDeveloper(String memberId, EditDeveloper.Request request) {
+
         validateDeveloperLevel(request.getDeveloperLevel(), request.getExperienceYears());
 
-        Developer developer = developerRepository.findByMemberId(memberId).orElseThrow(() -> new DMakerException(NO_DEVELOPER));
+        return DeveloperDetailDto.fromEntity(
+                getUpdatedDeveloperFromRequest(
+                        request, getDeveloperByMemberId(memberId)
+                )
+        );
+    }
 
+    private Developer getUpdatedDeveloperFromRequest(EditDeveloper.Request request, Developer developer) {
         developer.setDeveloerLevel(request.getDeveloperLevel());
         developer.setDeveloerSkillLevel(request.getDeveloperSkillLevel());
         developer.setExperienceYears(request.getExperienceYears());
 
-        return DeveloperDetailDto.fromEntity(developer);
+        return developer;
     }
 
     private void validateDeveloperLevel(DeveloperLevel developerLevel, Integer experienceYears) {
-        if (developerLevel == DeveloperLevel.SENIOR
-                && experienceYears < 10) {
-            throw new DMakerException(LEVEL_EXPERIENCE_YEARS_NOT_MATCHED);
-        }
-        if (developerLevel == DeveloperLevel.JUNGNIOR
-                && (experienceYears < 4 || experienceYears > 10)) {
-            throw new DMakerException(LEVEL_EXPERIENCE_YEARS_NOT_MATCHED);
-        }
-        if (developerLevel == DeveloperLevel.JUNIOR && experienceYears > 4) {
+        if (experienceYears < developerLevel.getMinExperienceYears() ||
+                experienceYears > developerLevel.getMaxExperienceYears()) {
             throw new DMakerException(LEVEL_EXPERIENCE_YEARS_NOT_MATCHED);
         }
     }
